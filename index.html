@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Memo — dgenny emite pedido de compra?</title>
+<style>
+  :root {
+    --paper: #F2F4F6;
+    --paper-raised: #FFFFFF;
+    --ink: #1B2227;
+    --muted: #5B6670;
+    --line: #D8DCDE;
+    --accent: #B5451B;
+    --accent-soft: #B5451B14;
+    --font-serif: Iowan Old Style, "Palatino Linotype", Palatino, Georgia, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #14181B;
+      --paper-raised: #1C2124;
+      --ink: #E7EAEC;
+      --muted: #8D9BA3;
+      --line: #2A3136;
+      --accent: #E0763D;
+      --accent-soft: #E0763D1F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #14181B;
+    --paper-raised: #1C2124;
+    --ink: #E7EAEC;
+    --muted: #8D9BA3;
+    --line: #2A3136;
+    --accent: #E0763D;
+    --accent-soft: #E0763D1F;
+  }
+  :root[data-theme="light"] {
+    --paper: #F2F4F6;
+    --paper-raised: #FFFFFF;
+    --ink: #1B2227;
+    --muted: #5B6670;
+    --line: #D8DCDE;
+    --accent: #B5451B;
+    --accent-soft: #B5451B14;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+  }
+
+  .internal-banner {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-align: center;
+    padding: 8px 12px;
+  }
+
+  .sheet {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+  }
+  .masthead .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .masthead .num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 36px);
+    line-height: 1.15;
+    margin: 0 0 20px;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 16px;
+    font-size: 14px;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .meta dt {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+  .meta dd { margin: 0; }
+
+  .verdict {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px 24px 24px 22px;
+    margin: 0 0 44px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 2px;
+  }
+  .stamp {
+    flex: none;
+    width: 108px;
+    height: 108px;
+    border: 2.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transform: rotate(-9deg);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    padding: 10px;
+    opacity: 0.92;
+  }
+  .verdict-text p {
+    margin: 0 0 8px;
+    font-size: 15.5px;
+  }
+  .verdict-text p:last-child { margin-bottom: 0; }
+  .verdict-text .lede {
+    font-family: var(--font-serif);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .verdict-text .sub { color: var(--muted); font-size: 14px; }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .source-block { margin-bottom: 40px; }
+  .source-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+  .source-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .synthesis {
+    font-size: 15px;
+    margin: 0 0 18px;
+    max-width: 62ch;
+  }
+
+  blockquote {
+    margin: 0 0 14px;
+    padding: 10px 16px;
+    border-left: 2px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 3px 3px 0;
+  }
+  blockquote p {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  blockquote cite {
+    display: block;
+    font-style: normal;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .note {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .update-banner {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px dashed var(--accent);
+    padding: 6px 10px;
+    display: inline-block;
+    margin-bottom: 18px;
+  }
+
+  .footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  a { color: var(--accent); }
+
+  .source-links {
+    list-style: none;
+    margin: 0 0 40px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+  }
+  .source-links li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .source-links-tag {
+    flex: none;
+    width: 70px;
+    color: var(--muted);
+  }
+  .source-links a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    word-break: break-all;
+  }
+  .source-links a:hover { border-bottom-color: var(--accent); }
+
+  @media (max-width: 480px) {
+    .sheet { padding: 36px 18px 56px; }
+    .verdict { flex-direction: column; align-items: flex-start; }
+    .stamp { width: 92px; height: 92px; font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="internal-banner">Documento interno dgenny® — não enviar este link ao lead</div>
+
+<div class="sheet">
+  <div class="masthead">
+    <span class="label">dgenny — memo interno</span>
+    <span class="num">27&nbsp;out&nbsp;2026 · atualizado 28&nbsp;out&nbsp;2026</span>
+  </div>
+
+  <h1>A dgenny emite pedido de compra?</h1>
+
+  <dl class="meta">
+    <dt>Assunto</dt>
+    <dd>Verificação em duas reuniões gravadas sobre emissão de PO e sobre onde começa o trabalho da dgenny</dd>
+    <dt>Para</dt>
+    <dd>Tierre</dd>
+    <dt>Fontes</dt>
+    <dd>2 transcrições (Google Docs) — referidas abaixo como Reunião A e Reunião B</dd>
+  </dl>
+
+  <ul class="source-links">
+    <li><span class="source-links-tag">Reunião A</span><a href="https://docs.google.com/document/d/102PGGYVdZLJ6q4qZrHjLIxUPa_st9vi64stYGKeFiCE/edit?tab=t.8kn7llmsaie5" target="_blank" rel="noopener">docs.google.com/.../102PGGY…FiCE</a></li>
+    <li><span class="source-links-tag">Reunião B</span><a href="https://docs.google.com/document/d/1y4Uak70dpksazYsqI8AmgtlTfj_JiMSgPFDkiEPKNmI/edit?tab=t.0#heading=h.ol4h0gqtd4ko" target="_blank" rel="noopener">docs.google.com/.../1y4Uak7…NmI</a></li>
+  </ul>
+
+  <div class="verdict">
+    <div class="stamp">NÃO<br>EMITE<br>PO</div>
+    <div class="verdict-text">
+      <p class="lede">Não. Nas duas reuniões, a emissão do pedido de compra é manual — feita pelo comprador, dentro do ERP do cliente.</p>
+      <p class="sub">A dgenny entrega a cotação organizada e estruturada; o clique final para gerar o PO é sempre do comprador.</p>
+    </div>
+  </div>
+
+  <div class="source-block">
+    <div class="source-head">
+      <h2>Reunião A</h2>
+      <span class="source-tag">tópico: integração com o Sienge</span>
+    </div>
+    <p class="synthesis">O ERP mencionado é o <strong>Sienge</strong> (a transcrição automática grafou como "Cenge"/"Ceng"). A dgenny estrutura os itens da cotação e os entrega prontos; gerar o pedido continua sendo um clique do comprador.</p>
+    <blockquote>
+      <p>"Não, o pedido de compra fica, vai lá pro Sienge e é o comprador que decide."</p>
+    </blockquote>
+    <blockquote>
+      <p>"As informações vão para lá, item por item. Ele só vai ter que clicar gerar pedido de compra."</p>
+    </blockquote>
+    <p class="note">Mesmo com a integração ativa, o comprador seleciona a requisição de compra já carregada na plataforma — mas a geração do PO em si permanece manual.</p>
+  </div>
+
+  <div class="source-block">
+    <div class="source-head">
+      <h2>Reunião B</h2>
+      <span class="source-tag">tópico: cotação e negociação via WhatsApp</span>
+    </div>
+    <p class="synthesis">Não há menção literal a "pedido de compra" ou "PO". O trecho mais próximo trata do fechamento após a cotação aprovada — também tratado como ato manual do comprador.</p>
+    <blockquote>
+      <p>"Quando a gente aprova com o cliente aqui, depois que ele falar, e em cima disso faz o pedido."</p>
+      <cite>Ronney Martins</cite>
+    </blockquote>
+    <blockquote>
+      <p>"Essa decisão final, aonde, quando e como pagar é do comprador."</p>
+    </blockquote>
+    <p class="note">Nessa reunião a dgenny é posicionada como especialista em cotação e negociação com fornecedores — não em geração automática de pedidos.</p>
+  </div>
+
+  <span class="update-banner">Atualização — 28 out 2026</span>
+
+  <div class="source-block">
+    <div class="source-head">
+      <h2>Onde começa o trabalho da dgenny</h2>
+      <span class="source-tag">Reunião B · ~00:36–00:38</span>
+    </div>
+    <p class="synthesis">O trabalho da dgenny começa a partir da requisição/solicitação de compra — puxada automaticamente do Sienge quando há integração, ou recebida manualmente (PDF, Excel, foto, digitação) quando não há.</p>
+    <blockquote>
+      <p>"Não, o pedido de compra fica, vai lá pro Sienge e é o comprador que decide. Por quê? É ele que vai escolher onde ele vai comprar."</p>
+      <cite>Tierre Fonseca Santos</cite>
+    </blockquote>
+    <blockquote>
+      <p>"Como ela vai captar da onde? Da internet. [...] Quem não tem Sienge ou não tem um ERP que tem integração com a gente [...] pega um PDF ou um Excel ou Copia e Cola, ou uma foto e manda para ela. [...] No momento da negociação, ao invés de eu digitar, mandar PDF [...] eu só vou selecionar a requisição de compra do Sienge que vai aparecer aqui na tela dela."</p>
+      <cite>Tierre Fonseca Santos</cite>
+    </blockquote>
+  </div>
+
+  <div class="source-block">
+    <div class="source-head">
+      <h2>Solicitação de compra precisa estar lançada no Sienge</h2>
+      <span class="source-tag">Reunião B · ~00:24–00:39</span>
+    </div>
+    <p class="synthesis">Pré-requisito confirmado na prática: o caminho "selecionar a requisição" só existe quando ela já está lançada no sistema. Sem isso, o caminho é manual/importado.</p>
+    <blockquote>
+      <p>"Que que ficaria a cargo de você fazer lá no Sienge? Vê se existe requisição de compra, mas você pode também disparar a negociação com PDF, Excel ou digitar para ela. [...] A integração com Sienge é uma facilidade pros nossos clientes, mas ela também devolve."</p>
+      <cite>Tierre Fonseca Santos</cite>
+    </blockquote>
+    <blockquote>
+      <p>"Quem tem Sienge aqui aparece as requisições aqui embaixo. Requisição 13 é de cimento. Eu vou vir aqui, clicar e selecionar." — "Ah, obra que tá fora do Sienge." — "Importa aqui o arquivo de Excel, PDF, documento ou digita e ainda ela vai complementar a descrição para você."</p>
+      <cite>Tierre Fonseca Santos e Danilo Campolina</cite>
+    </blockquote>
+  </div>
+
+  <div class="source-block">
+    <div class="source-head">
+      <h2>Cliente confirma que não lança solicitação de compra no Sienge</h2>
+      <span class="source-tag">Reunião B · ~00:08–00:14</span>
+    </div>
+    <p class="synthesis">A Campolina (Danilo Campolina e Ronney Martins) confirma que, das quatro etapas do processo de compra, só duas estão no Sienge. A solicitação de material/compra é feita via WhatsApp e Excel, fora do sistema.</p>
+    <blockquote>
+      <p>"[...] a solicitação de material mapa de cotação, a gente já fez em Sienge. Hoje a gente não tá fazendo, sendo que tá muito burocrático, muito clique, entendeu? Aí tá entrando o pedido de compra no Sienge. [...] de quatro etapas, só duas estão no Sienge. As outras duas a gente faz no Excel e WhatsApp."</p>
+      <cite>Danilo Campolina</cite>
+    </blockquote>
+    <blockquote>
+      <p>"A solicitação vem da obra através de um grupo de WhatsApp. Eu disparo pros fornecedores essa relação de material, recebo o retorno deles no PDF e pego todas essas informações e coloco dentro de uma planilha de Excel onde vai ser aprovado pela obra. Aprovou, eu mando o pedido pro fornecedor e a nota fiscal chega junto com o material na obra, depois manda a nota fiscal para cá para eu poder lançar."</p>
+      <cite>Ronney Martins</cite>
+    </blockquote>
+    <p class="note">Implicação prática: nesse cliente, o caminho "automático" (selecionar requisição já lançada no Sienge) não se aplica à solicitação de compra — só caberia pelo caminho manual/importado até que a Campolina decida lançar essa etapa no Sienge.</p>
+  </div>
+
+  <div class="footer">
+    <span>Verificado via leitura das transcrições completas (Google Docs) — 27 e 28 out 2026</span>
+    <span>dgenny®</span>
+  </div>
+</div>
+
+</body>
+</html>
